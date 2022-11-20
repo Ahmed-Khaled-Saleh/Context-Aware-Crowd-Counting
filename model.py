@@ -35,7 +35,7 @@ class CANNet(nn.Module):
         self.seen = 0
         self.context = ContextualModule(512, 512)
         self.frontend_feat = [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512]
-        self.backend_feat  = [512, 512, 512,256,128,64]
+        self.backend_feat  = [512, 512, 512, 256, 128, 64]
         self.frontend = make_layers(self.frontend_feat)
         self.backend = make_layers(self.backend_feat,in_channels = 512,batch_norm=True, dilation = True)
         self.output_layer = nn.Conv2d(64, 1, kernel_size=1)
@@ -70,9 +70,9 @@ def make_layers(cfg, in_channels = 3,batch_norm=False,dilation = False):
     layers = []
     for v in cfg:
         if v == 'M':
-            layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
+            layers += [nn.MaxPool2d(kernel_size=2, stride=1)]
         else:
-            conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=d_rate,dilation = d_rate)
+            conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=d_rate, dilation = d_rate)
             if batch_norm:
                 layers += [conv2d, nn.BatchNorm2d(v), nn.ReLU(inplace=True)]
             else:
