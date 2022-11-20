@@ -219,7 +219,8 @@ def train(train_loader, model, criterion, optimizer, epoch):
     model.train()
     end = time.time()
 
-    for i,(img, target)in enumerate(train_loader):
+    for i, d  in enumerate(train_loader):
+        img, target = d
         data_time.update(time.time() - end)
 
         img = img.cuda()
@@ -253,7 +254,8 @@ def validate(val_loader, model, criterion):
     model.eval()
 
     mae = 0
-    for i,(img, target) in enumerate(val_loader):
+    for i, d in enumerate(val_loader):
+        img, target = d
         h,w = img.shape[2:4]
         h_d = h/2
         w_d = w/2
