@@ -98,8 +98,8 @@ class CustomDataLoader(Dataset):
         else:
             img_tensor = torch.from_numpy(image)
                       
-        heat_tensor = torch.from_numpy(heat[:,:, np.newaxis])
-        heat_tensor = heat_tensor.permute(2, 0, 1)
+        heat_tensor = torch.from_numpy(heat)
+        # heat_tensor = heat_tensor.permute(2, 0, 1)
         
         return img_tensor.to(device).float(), heat_tensor.to(device).float()
 
@@ -190,6 +190,7 @@ def main():
     torch.cuda.manual_seed(args.seed)
 
     model = CANNet()
+    print(summary(model, (3, 64, 64)))
 
     model = model.cuda()
 
@@ -232,7 +233,6 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
         target = target.type(torch.FloatTensor).cuda()
         target = Variable(target)
-        print(output.shape, target.shape)
 
         loss = criterion(output, target)
 
