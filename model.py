@@ -43,6 +43,9 @@ class CANNet(nn.Module):
             mod = models.vgg16(pretrained = True)
             self._initialize_weights()
             for i, key in enumerate(self.frontend.state_dict().keys()):
+                print(self.frontend.state_dict().keys())
+                print(mod.state_dict().keys())
+
                 self.frontend.state_dict()[key][1].data[:] = mod.state_dict()[key][1].data[:]
 
     def forward(self,x):
