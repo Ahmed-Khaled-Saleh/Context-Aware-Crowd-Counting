@@ -170,8 +170,7 @@ dataloader_test = torch.utils.data.DataLoader(sub_dataset_test, batch_size=batch
 
 def main():
 
-    ims, hets = next(iter(dataloader_train))
-    print(ims.shape, hets.shape)
+    
 
     global args,best_prec1
 
@@ -233,6 +232,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
         target = target.type(torch.FloatTensor).cuda()
         target = Variable(target)
+        print(output.shape, target.shape)
 
         loss = criterion(output, target)
 
