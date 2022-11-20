@@ -75,10 +75,11 @@ def make_layers(cfg, in_channels = 3,batch_norm=False,dilation = False, backend=
     layers = []
     for v in cfg:
         if v == 'M':
+            print(backend, '-----------')
             if ~backend:
                 layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
             else:
-                layers += [nn.MaxPool2d(kernel_size=3, stride=2)]
+                layers += [nn.MaxPool2d(kernel_size=2, stride=3)]
         else:
             conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=d_rate, dilation = d_rate)
             if batch_norm:
