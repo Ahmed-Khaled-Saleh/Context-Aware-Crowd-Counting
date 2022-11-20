@@ -190,9 +190,9 @@ def main():
     torch.cuda.manual_seed(args.seed)
 
     model = CANNet()
+    model = model.cuda()
     print(summary(model, (3, 64, 64)))
 
-    model = model.cuda()
 
     criterion = nn.MSELoss(size_average=False).cuda()
 
