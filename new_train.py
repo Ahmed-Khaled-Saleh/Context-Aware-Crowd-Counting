@@ -166,6 +166,8 @@ sub_dataset_test =Subset(train_ds, test_indices)
 dataloader_test = torch.utils.data.DataLoader(sub_dataset_test, batch_size=batch_size, shuffle=True)
 
 
+ims, hets = next(iter(dataloader_train))
+print(ims.shape, hets.shape)
 
 def main():
 
