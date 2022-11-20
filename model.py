@@ -45,8 +45,7 @@ class CANNet(nn.Module):
             for i, key in enumerate(self.frontend.state_dict().keys()):
                 print(self.frontend.state_dict().keys())
                 print(mod.state_dict().keys())
-
-                self.frontend.state_dict()[key][1].data[:] = mod.state_dict()[key][1].data[:]
+                self.frontend.state_dict()[key][1].data[:] = mod.state_dict()[f"features.{key}"][1].data[:]
 
     def forward(self,x):
         x = self.frontend(x)
