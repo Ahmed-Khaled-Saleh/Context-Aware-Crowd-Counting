@@ -258,10 +258,7 @@ def validate(val_loader, model, criterion):
     model.eval()
 
     mae = 0
-    count = 0
     for i, d in enumerate(val_loader):
-        count += 1
-        if count > 50: break
         img, target = d
         density = model(img).data.cpu().numpy()
         mae += abs(density.sum() - target.sum())
