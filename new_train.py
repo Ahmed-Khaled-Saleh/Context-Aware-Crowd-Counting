@@ -261,7 +261,7 @@ def validate(val_loader, model, criterion):
     c = 0
     for i, d in enumerate(val_loader):
         c += 1
-        c > 50: break
+        if c > 50: break
         img, target = d
         density = model(img).data.cpu().numpy()
         
