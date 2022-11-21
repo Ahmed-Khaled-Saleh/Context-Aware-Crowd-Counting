@@ -272,7 +272,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
                    epoch, i, len(train_loader), batch_time=batch_time,
                    data_time=data_time, loss=losses))
     
-    return loss_train / len(loss_train)
+    return sum(loss_train) / len(loss_train)
 
 def validate(val_loader, model, criterion):
     print ('begin val')
