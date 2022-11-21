@@ -209,7 +209,7 @@ def main():
 
         print("******************")
         prec1 = validate(dataloader_val, model, criterion)
-        val_total_loss.append(pred)
+        val_total_loss.append(prec1)
 
         is_best = prec1 < best_prec1
         best_prec1 = min(prec1, best_prec1)
