@@ -52,7 +52,7 @@ class CANNet(nn.Module):
     def forward(self,x):
         x = self.frontend(x)
         x = self.context(x)
-        x = F.upsample(input=x, size=(32, 32), mode='bilinear')(x)
+        x = F.upsample(input=3, size=(32, 32), mode='bilinear')(x)
         x = self.backend(x)
         x = self.output_layer(x)
         return x
