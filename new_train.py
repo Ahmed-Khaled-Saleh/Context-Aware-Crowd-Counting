@@ -267,8 +267,6 @@ def validate(val_loader, model, criterion):
         density = model(img).data.cpu().numpy()
         density = density.reshape(target.shape)
         target = target.cpu().numpy()
-        print(density.shape, target.shape)
-        print(np.sum(target, axis=1).sum(axis=1))
         mae += np.sum(abs(np.sum(density, axis=1).sum(axis=1)- np.sum(target, axis=1).sum(axis=1)))
 
     mae = mae/len(val_loader)
