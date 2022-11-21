@@ -252,7 +252,6 @@ def train(train_loader, model, criterion, optimizer, epoch):
                   .format(
                    epoch, i, len(train_loader), batch_time=batch_time,
                    data_time=data_time, loss=losses))
-        break
         
 def validate(val_loader, model, criterion):
     print ('begin val')
@@ -267,7 +266,7 @@ def validate(val_loader, model, criterion):
         density = model(img).data.cpu().numpy()
         density = density.reshape(target.shape)
         target = target.cpu().numpy()
-        mae += np.sum(abs(np.sum(density, axis=1).sum(axis=1)- np.sum(target, axis=1).sum(axis=1)))
+        mae += (np.sum(abs(np.sum(density, axis=1).sum(axis=1)- np.sum(target, axis=1).sum(axis=1)))/26)
 
     mae = mae/len(val_loader)
     print(' * MAE {mae:.3f} '
