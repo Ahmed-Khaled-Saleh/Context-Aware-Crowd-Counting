@@ -141,14 +141,14 @@ labels_path = '../input/xview-tiled/labels/train/'
 train_indices, test_indices, _, _ = train_test_split(
     range(len(os.listdir(images_path))),
     torch.ones(len(os.listdir(images_path))),
-    test_size=0.40,
+    test_size=0.6,
     random_state=42
 )
  
 train_indices, val_indices, _, _ = train_test_split(
     train_indices,
     torch.ones(len(train_indices)),
-    test_size=0.50,
+    test_size=0.20,
     random_state=42
 )
 
@@ -159,7 +159,7 @@ dataloader_train = torch.utils.data.DataLoader(sub_dataset_train, batch_size=bat
 
 #dataset_val = Subset(CustomDataLoader(val_path, val_labels, preprocess))
 sub_dataset_val =Subset(train_ds, val_indices)
-dataloader_val = torch.utils.data.DataLoader(sub_dataset_val, batch_size=1, shuffle=True)
+dataloader_val = torch.utils.data.DataLoader(sub_dataset_val, batch_size=batch_size, shuffle=True)
 
 # dataset_test = Subset(CustomDataLoader(test_path, test_labels, preprocess))
 sub_dataset_test =Subset(train_ds, test_indices)
@@ -258,10 +258,14 @@ def validate(val_loader, model, criterion):
     model.eval()
 
     mae = 0
+    c = 0
     for i, d in enumerate(val_loader):
+        c += 1
+        c > 50: break
         img, target = d
         density = model(img).data.cpu().numpy()
-        mae += abs(density.sum() - target.sum())
+        
+        mae += np.sum(abs(np.sum(density, axis=1).sum(axis=1)- np.sum(target, axis=1).sum(axis=1)))
 
     mae = mae/len(val_loader)
     print(' * MAE {mae:.3f} '
