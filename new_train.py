@@ -191,7 +191,6 @@ def main():
 
     model = CANNet()
     model = model.cuda()
-    print(summary(model, (3, 64, 64)))
 
 
     criterion = nn.MSELoss(size_average=False).cuda()
@@ -201,6 +200,7 @@ def main():
 
     for epoch in range(args.start_epoch, args.epochs):
         train(dataloader_train, model, criterion, optimizer, epoch)
+        print("******************")
         prec1 = validate(dataloader_val, model, criterion)
 
         is_best = prec1 < best_prec1
@@ -258,7 +258,10 @@ def validate(val_loader, model, criterion):
     model.eval()
 
     mae = 0
+    count = 0
     for i, d in enumerate(val_loader):
+        count += 1
+        if count > 50: break
         img, target = d
         h,w = img.shape[2:4]
         h_d = h/2
