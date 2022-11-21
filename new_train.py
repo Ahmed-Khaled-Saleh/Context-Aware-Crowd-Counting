@@ -1,6 +1,6 @@
 import sys
 import os
-
+import pickle
 import warnings
 
 from torchvision.io import read_image
@@ -198,18 +198,33 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), args.lr,
                                     weight_decay=args.decay)
 
+
+
+    train_total_loss = []
+    val_total_loss = []
     for epoch in range(args.start_epoch, args.epochs):
-        train(dataloader_train, model, criterion, optimizer, epoch)
+
+        loss_train = train(dataloader_train, model, criterion, optimizer, epoch)
+        train_total_loss.append(loss_train)
+
         print("******************")
         prec1 = validate(dataloader_val, model, criterion)
+        val_total_loss.append(pred)
 
         is_best = prec1 < best_prec1
         best_prec1 = min(prec1, best_prec1)
+
+        with open('losses.pkl', 'wb') as outp:
+            pickle.dump({'train_loss': train_total_loss, 'val_loss': val_total_loss}, outp, pickle.HIGHEST_PROTOCOL)
+
         print(' * best MAE {mae:.3f} '
               .format(mae=best_prec1))
         save_checkpoint({
             'state_dict': model.state_dict(),
         }, is_best)
+        
+        if is_best:
+            torch.save(model, 'best_model.pth.tar')
 
 def train(train_loader, model, criterion, optimizer, epoch):
 
@@ -223,6 +238,8 @@ def train(train_loader, model, criterion, optimizer, epoch):
     model.train()
     end = time.time()
 
+
+    loss_train = []
     for i, d  in enumerate(train_loader):
         img, target = d
         data_time.update(time.time() - end)
@@ -235,6 +252,8 @@ def train(train_loader, model, criterion, optimizer, epoch):
         target = Variable(target)
 
         loss = criterion(output, target)
+        loss_train.append(loss)
+
 
         losses.update(loss.item(), img.size(0))
         optimizer.zero_grad()
@@ -252,7 +271,9 @@ def train(train_loader, model, criterion, optimizer, epoch):
                   .format(
                    epoch, i, len(train_loader), batch_time=batch_time,
                    data_time=data_time, loss=losses))
-        
+    
+    return loss_train / len(loss_train)
+
 def validate(val_loader, model, criterion):
     print ('begin val')
     model.eval()
@@ -261,14 +282,14 @@ def validate(val_loader, model, criterion):
     c = 0
     for i, d in enumerate(val_loader):
         c += 1
-        if c > 50: break
+        if c > 70: break
         img, target = d
         density = model(img).data.cpu().numpy()
         density = density.reshape(target.shape)
         target = target.cpu().numpy()
         mae += (np.sum(abs(np.sum(density, axis=1).sum(axis=1)- np.sum(target, axis=1).sum(axis=1)))/26)
 
-    mae = mae/len(val_loader)
+    mae = mae/70
     print(' * MAE {mae:.3f} '
               .format(mae=mae))
 
