@@ -4,6 +4,8 @@ import shutil
 import numpy as np
 
 def save_net(fname, net):
+    torch.save(net, './best_model_all.pth.tar')
+
     with h5py.File(fname, 'w') as h5f:
         for k, v in net.state_dict().items():
             h5f.create_dataset(k, data=v.cpu().numpy())
