@@ -135,24 +135,24 @@ preprocess = transforms.Compose([
                                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
                                 ])
 
-images_path = '../input/xview-tiled/images/train'
-labels_path = '../input/xview-tiled/labels/train/'
+images_path = '../input/xview-tiled/images/dev/'
+labels_path = '../input/xview-tiled/labels/dev/'
 
 train_indices, test_indices, _, _ = train_test_split(
     range(len(os.listdir(images_path))),
     torch.ones(len(os.listdir(images_path))),
-    test_size=0.6,
+    test_size=0.10,
     random_state=42
 )
  
 train_indices, val_indices, _, _ = train_test_split(
     train_indices,
     torch.ones(len(train_indices)),
-    test_size=0.20,
+    test_size=0.10,
     random_state=42
 )
 
-batch_size = 26
+batch_size = 32
 train_ds = CustomDataLoader(images_path, labels_path, preprocess)
 sub_dataset_train =Subset(train_ds, train_indices)
 dataloader_train = torch.utils.data.DataLoader(sub_dataset_train, batch_size=batch_size, shuffle=True)
@@ -178,7 +178,7 @@ def main():
 
     args = parser.parse_args()
     args.lr = 1e-4
-    args.batch_size    = 26
+    args.batch_size    = 32
     args.decay         = 5*1e-4
     args.start_epoch   = 0
     args.epochs = 100
@@ -288,7 +288,7 @@ def validate(val_loader, model, criterion):
         density = model(img).data.cpu().numpy()
         density = density.reshape(target.shape)
         target = target.cpu().numpy()
-        mae += (np.sum(abs(np.sum(density, axis=1).sum(axis=1)- np.sum(target, axis=1).sum(axis=1)))/26)
+        mae += (np.sum(abs(np.sum(density, axis=1).sum(axis=1)- np.sum(target, axis=1).sum(axis=1)))/batch_size)
 
     mae = mae/70
     print(' * MAE {mae:.3f} '
