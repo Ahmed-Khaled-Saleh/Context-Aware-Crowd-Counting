@@ -224,7 +224,8 @@ def main():
         }, is_best)
         
         if is_best:
-            torch.save(model, 'best_model.pth.tar')
+            with open('best_model.pickle', 'wb') as outp:
+                pickle.dump(model, outp)
 
 def train(train_loader, model, criterion, optimizer, epoch):
 
