@@ -22,7 +22,6 @@ class ContextualModule(nn.Module):
         return nn.Sequential(prior, conv)
 
     def forward(self, feats):
-        print(self.scales[0](feats))
         h, w = feats.size(2), feats.size(3)
         multi_scales = [F.upsample(input=stage(feats), size=(h, w), mode='bilinear') for stage in self.scales]
         weights = [self.__make_weight(feats,scale_feature) for scale_feature in multi_scales]
@@ -53,7 +52,7 @@ class CANNet(nn.Module):
     def forward(self,x):
         x = self.frontend(x)
         x = self.context(x)
-        # x = F.upsample(input=(3,3), size=(32, 32), mode='bilinear')(x)
+        x = F.upsample(2, mode='bilinear')(x)
         x = self.backend(x)
         x = self.output_layer(x)
         return x
