@@ -108,24 +108,24 @@ class CustomDataLoader(Dataset):
 def get_heatmap(image, boxs, heatmap_size=None):
     h, w, _ = image.shape
     heatmap = np.zeros((h, w))
-
+    
+    image_ = image.copy()
     for i, row in boxs.iterrows():
         x1, y1, x2, y2 = pbx.convert_bbox((row.x_min, row.y_min, row.w, row.h), from_type="yolo", to_type="voc", image_size=(w,h))
         start_point = (x1, y1) 
         end_point = (x2, y2)
-        image = cv2.rectangle(image, start_point, end_point, (255, 0, 0), 10)
+        image_ = cv2.rectangle(image_, start_point, end_point, (255, 0, 0), 10)
         centr_x = int(x1+((x2-x1)/2))
         centr_y = int(y1+((y2-y1)/2))
-        image = cv2.circle(image, (centr_x,centr_y), radius=int(0.01*w), color=(255, 0, 255), thickness=-1)
-        heatmap = cv2.circle(heatmap, (centr_x,centr_y), radius=int(0.01*w), color=(255, 0, 255), thickness=-1)
-    
-    #heatmap = cv2.GaussianBlur(heatmap,(91,91),cv2.BORDER_REFLECT_101) 
+        image_ = cv2.circle(image_, (centr_x,centr_y), radius=int(0.01*w), color=(255, 0, 255), thickness=-1)
+        heatmap[centr_y, centr_x] = 255
+        # heatmap = cv2.circle(heatmap, (centr_x,centr_y), radius=1, color=(255, 255, 255), thickness=-1)
+        # heatmap = cv2.GaussianBlur(heatmap,(91,91),cv2.BORDER_REFLECT_101) 
 
     if heatmap_size:
-        heatmap = cv2.resize(heatmap, heatmap_size, interpolation = cv2.INTER_AREA)
-        
-    return image, heatmap
-
+        heatmap = cv2.resize(heatmap, heatmap_size, interpolation=cv2.INTER_AREA)
+    
+    return image_, heatmap
 
 
 preprocess = transforms.Compose([
