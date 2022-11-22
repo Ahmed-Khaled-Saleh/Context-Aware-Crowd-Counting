@@ -117,10 +117,10 @@ def get_heatmap(image, boxs, heatmap_size=None):
         image_ = cv2.rectangle(image_, start_point, end_point, (255, 0, 0), 10)
         centr_x = int(x1+((x2-x1)/2))
         centr_y = int(y1+((y2-y1)/2))
-        image_ = cv2.circle(image_, (centr_x,centr_y), radius=int(0.01*w), color=(255, 0, 255), thickness=-1)
+        image_ = cv2.circle(image_, (centr_x,centr_y), radius=int(0.0009*w), color=(255, 0, 255), thickness=-1)
         heatmap[centr_y, centr_x] = 255
-        # heatmap = cv2.circle(heatmap, (centr_x,centr_y), radius=1, color=(255, 255, 255), thickness=-1)
-        # heatmap = cv2.GaussianBlur(heatmap,(91,91),cv2.BORDER_REFLECT_101) 
+        heatmap = cv2.circle(heatmap, (centr_x,centr_y), radius=1, color=(255, 255, 255), thickness=-1)
+        heatmap = cv2.GaussianBlur(heatmap,(91,91),cv2.BORDER_REFLECT_101) 
 
     if heatmap_size:
         heatmap = cv2.resize(heatmap, heatmap_size, interpolation=cv2.INTER_AREA)
